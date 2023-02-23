@@ -13,9 +13,8 @@ public class Main {
 
   }
 
-  // BUG: this code doesn't work (see main method). Please test your code.
   public static double[][] copyRectangle(double[][] array) {
-    double[][] copy = new double[array.length][];
+    double[][] copy = new double[array.length][array[0].length];
     for (int i = 0; i < array.length; i++) {
       for (int j = 0; j < array[0].length; j++) {
         copy[i][j] = array[i][j];
@@ -36,11 +35,10 @@ public class Main {
     return copy;
   }
 
-  // good
   public static void printTranspose(double[][] a) {
-    for (int j = 0 ; j < a[0].length; j++) {
-      for (int i = 0; i < a.length; i++) {
-        System.out.print(a[i][j] + " ");
+    for (int r = 0 ; r < a[0].length; r++) {
+      for (int c = 0; c < a.length; c++) {
+        System.out.print(a[c][r] + " ");
       }
       System.out.println();
     }
@@ -48,45 +46,48 @@ public class Main {
   }
    
   public static double[][] withWeightedAverage(double[][] a, double[] weights) {
-  // TODO: the readme stated there should be column averages too
-    double[][] copy = new double[a.length][a[0].length + 1];
+    
+    double[][] copy = new double[a.length + 1][a[0].length + 1];
     for (int row = 0 ; row < a.length; row++) {
-      // FIXME: don't hard code in the number of columns
-      for (int collumn = 0; collumn < 3; collumn++) {
+      //get average of each row and collumn
+      for (int collumn = 0; collumn < copy[row].length - 1; collumn++) {
         copy[row][collumn] = a[row][collumn];
-        copy[row][3] += a[row][collumn] * weights[collumn];
+        copy[copy.length-1][collumn] += a[row][collumn] * (1/ (double) a.length);
+        copy[row][copy[row].length - 1] += a[row][collumn] * weights[collumn];
+        
       }
+      //add average of each row to last collumn average
+      copy[copy.length-1][copy[row].length - 1] += copy[row][copy[row].length - 1] * (1/ (double) a.length);
     }
     return copy;
   }
     
 
   public static void main(String[] args) {
-    // FIXME: the following code causes a crash
     double[][] origRectangle = new double[][] {
       {1, 2, 3},
       {4, 5, 6}
     };
-    double[][] copyOfRectangle = copyRectangle(origRectangle);
 
 
-  //   double[][] a = new double[][] {
-  //     {99, 85, 98},
-  //     {98, 57, 79},
-  //     {92, 77, 74},
-  //     {94, 62, 81},
-  //     {99, 94, 92},
-  //     {80, 76.5, 67},
-  //     {76, 58.5, 90.5},
-  //     {92, 66, 91},
-  //     {77, 70.5, 66.5},
-  //     {89, 89.5, 81}
-  // };
+    withWeightedAverage(origRectangle, new double[] {0.25, 0.25, 0.50});
 
-  //System.out.println(Arrays.deepToString(a));
-  //System.out.println(Arrays.deepToString(copyRagged(a)));
-  //printTranspose(a);
-  // System.out.println(Arrays.deepToString(withWeightedAverage(a, new double[] {0.25, 0.25, 0.50})));
+
+     double[][] a = new double[][] {
+      {99, 85, 98},
+       {98, 57, 79},
+       {92, 77, 74},
+       {94, 62, 81},
+       {99, 94, 92},
+       {80, 76.5, 67},
+       {76, 58.5, 90.5},
+       {92, 66, 91},
+       {77, 70.5, 66.5},
+       {89, 89.5, 81}
+   };
+
+  
+  System.out.println(Arrays.deepToString(withWeightedAverage(a, new double[] {0.25, 0.25, 0.50})));
 
 
   }
